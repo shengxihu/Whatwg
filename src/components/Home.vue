@@ -1,50 +1,108 @@
 <template>
-  	<div class="home">
-	    <h1>Whatwg</h1>
-		<h3>科技让生活更美好</h3>
-		<div class="row">
-			<span>
-				<input class="gate" id="class" type="text" placeholder="username" /><label for="class">用户名</label>
-			</span><br>
-			<span>
-				<input class="gate" id="element" type="text" placeholder="passward" /><label for="element">密码</label>
-			</span><br>
-      <transition name="fade">
-        <span v-if="registed">
-          <input class="gate" id="move" type="text" placeholder="email" /><label for="move">邮箱</label>
-        </span>
-      </transition><br>
-      <a @click="ifRegisted" v-if="!registed" class="login">没有账号？点击注册</a>
-      <a @click="ifRegisted" v-else class="login">已有账号？点击登录</a>
-      <div class="bt">
-        <a v-if="!registed" title="登录">登录</a>
-			  <a v-else title="注册">注册</a>
-      <div>
-		</div>
-	</div>
+  <div class="box">
+    <div v-if="$route.name == index" class="home">
+        <h1>Whatwg</h1>
+        <h3>科技让生活更美好</h3>
+        <div class="row">
+          <transition name="fade">
+            <span v-if="registed">
+                <input class="gate" id="class" v-model="username" type="text" placeholder="username" /><label for="class">用户名</label>
+            </span>
+          </transition><br>
+          <span>
+            <input class="gate" id="move" v-model="email" type="text" placeholder="email" /><label for="move">邮箱</label>
+          </span><br>
+          <span>
+            <input class="gate" id="element" v-model="passward" type="passward" placeholder="passward" /><label for="element">密码</label>
+          </span><br>
+          <a @click="ifRegisted" v-if="!registed" class="login">没有账号？点击注册</a>
+          <a @click="ifRegisted" v-else class="login">已有账号？点击登录</a>
+          <div class="bt">
+            <a v-if="!registed" @click="Login" title="登录">登录</a>
+            <a v-else  @click="Login" title="注册">注册</a>
+          </div>
+        </div>
+    </div>
+		<router-view></router-view>
+  </div>
 </template>
 
 <script>
-
+import { mapActions } from 'vuex'
 export default {
   data(){
     return {
       registed: false,
+      username: '',
+      passward:'',
+      email:''
     }
   },
   methods:{
     ifRegisted(){
       this.registed = !this.registed
       console.log(this.registed)
-    }
+    },
+    fetchList(){
+        var self = this
+        this.$http.get('api/posts').then(function(response){
+            this.initList(response.data.data)
+        },
+        function(response){
+            console.log("fii")
+        });
+    },
+    Login(){
+      var self = this
+      // self.fetchList()
+      var bd_data = {
+        mail: self.email,
+        pwd: self.passward,
+      }
+      var url;
+      if(!this.registed) {
+        url = 'api/user/login'
+      } else {
+        url = 'api/user/register'
+      }
+      this.$http.post(url, bd_data).then(function(response){
+          // 响应成功回调
+          document.cookie = 'token=' + response.body.data.token
+          document.cookie = 'email=' + self.email
+          document.cookie = 'passward=' + self.passward
+          document.cookie = 'username=' + self.username
+          this.initData(response.body.data)
+          console.log(response.body.data)
+          this.$router.push('list')
+      }, function(response){
+         console.log(response.body)
+          if(response.body.code == 1) {
+            alert("已注册，请直接登录！")
+            
+          }
+          if(response.body.code == 3) {
+            alert("未注册，请先注册！")
+            
+          }
+          // 响应错误回调
+      });
+    },
+    ...mapActions([
+      'initData',
+      'initList'
+    ])
   },
 }
 	
 </script>
 
 <style lang='sass' scoped>
+.box {
+  width: 100%;
+  min-height: 100%;
+}
 .home {
-	height: 100%;
+	height: 100vh;
 	padding-top: 80px;
 	text-align: center;
 	font-size: 30px;
@@ -153,9 +211,6 @@ export default {
       right: 20%;
     }
   }
-}
-span:nth-child(2) .gate {
-  text-indent: 85px;
 }
 span:nth-child(2) .gate:focus,
 span:nth-child(2) .gate:active{
