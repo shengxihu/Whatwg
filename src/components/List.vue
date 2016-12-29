@@ -132,7 +132,7 @@ export default {
                 token=document.cookie.split(";")[0].split("=")[1]; 
             }
             console.log(this.usr_data.token)
-            var url = 'api/posts/' + id + '/reply'
+            var url = '182.254.247.206:5656/api/posts/' + id + '/reply'
             this.$http.post(url, bd_data, {
                 headers: {
                     Authorization: token
@@ -150,7 +150,7 @@ export default {
             var self = this
             console.log(this.usr_data.token)
             var self = this
-            var url = '/api/posts/' + id
+            var url = '182.254.247.206:5656/api/posts/' + id
             this.$http.delete(url, {
                 headers: {
                     Authorization: self.usr_data.token
@@ -176,7 +176,7 @@ export default {
                 content: this.input_cont
             }
             var self = this
-            this.$http.post('api/posts', bd_data,  {
+            this.$http.post('182.254.247.206:5656/api/posts', bd_data,  {
                 headers: {
                     Authorization: self.usr_data.token
                 }
@@ -191,7 +191,7 @@ export default {
         },
         fetchList(){
             var self = this
-            this.$http.get('api/posts').then(function(response){
+            this.$http.get('182.254.247.206:5656/api/posts').then(function(response){
                 self.initList(response.data.data)
                 console.log(response.data.data)
             },

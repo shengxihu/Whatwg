@@ -45,7 +45,7 @@ export default {
     },
     fetchList(){
         var self = this
-        this.$http.get('api/posts').then(function(response){
+        this.$http.get('182.254.247.206:5656/api/posts').then(function(response){
             this.initList(response.data.data)
         },
         function(response){
@@ -61,9 +61,9 @@ export default {
       }
       var url;
       if(!this.registed) {
-        url = 'api/user/login'
+        url = '182.254.247.206:5656/api/user/login'
       } else {
-        url = 'api/user/register'
+        url = '182.254.247.206:5656/api/user/register'
       }
       this.$http.post(url, bd_data).then(function(response){
           // 响应成功回调

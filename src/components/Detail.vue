@@ -65,7 +65,7 @@ export default {
                 token=document.cookie.split(";")[0].split("=")[1]; 
             }
             console.log(this.usr_data.token)
-            var url = 'api/posts/' + id + '/reply'
+            var url = '182.254.247.206:5656/api/posts/' + id + '/reply'
             this.$http.post(url, bd_data, {
                 headers: {
                     Authorization: token
@@ -81,7 +81,7 @@ export default {
         fetchList(){
             var self = this
             console.log(self.$route.params.id)
-            var url = '/api/posts/' + self.$route.params.id
+            var url = '182.254.247.206:5656/api/posts/' + self.$route.params.id
             this.$http.get(url).then(function(response){
                 self.info = response.data.data.topic
                 self.replys = response.data.data.replys 
